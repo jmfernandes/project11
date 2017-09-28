@@ -4,6 +4,7 @@ angular.module('hexApp', [])
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     var layout;
+    self.mouse = "";
 
     var isMobile = {
     Android: function() {
@@ -24,7 +25,8 @@ angular.module('hexApp', [])
     any: function() {
         return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
     }
-};
+    };
+
     if( isMobile.any() ) {
       self.size = 20;
     } else{
@@ -65,16 +67,14 @@ angular.module('hexApp', [])
           for (j = -self.radius; j <= self.radius; j++) {
             for (k = -self.radius; k <= self.radius; k++) {
               if (i+j+k == 0){
-                self.draw_hex(ctx, i, j, k, self.center, self.size);
+                draw_hex(ctx, i, j, k, self.center, self.size,"#ffffff");
               }
             }
           }
-
-
-      }
+        }
     };
 
-    self.draw_hex = function(canvas, q, r, s, center, size) {
+    function draw_hex(canvas, q, r, s, center, size,color) {
       var h = Hex(q, r, s);
       if (self.option == "flat"){
         layout = Layout(layout_flat, Point(size, size), Point(center.x, center.y));
@@ -82,7 +82,7 @@ angular.module('hexApp', [])
       else{
         layout = Layout(layout_pointy, Point(size, size), Point(center.x, center.y));
       }
-      var corners = self.polygon_corners(layout, h);
+      var corners = polygon_corners(layout, h);
       canvas.beginPath();
       var item;
       for (item in corners) {
@@ -92,37 +92,88 @@ angular.module('hexApp', [])
           canvas.lineTo(corners[item].x, corners[item].y);
         }
       }
-      canvas.lineTo(corners[0].x, corners[0].y);
+      canvas.closePath();
+      canvas.lineWidth = 3;
       canvas.stroke();
-    };
+      canvas.fillStyle = color;
+      canvas.fill();
+    }
 
-    self.hex_corner_offset = function(layout, corner) {
+    // function draw_hex_color(canvas, q, r, s, center, size) {
+    //   var h = Hex(q, r, s);
+    //   if (self.option == "flat"){
+    //     layout = Layout(layout_flat, Point(size, size), Point(center.x, center.y));
+    //   }
+    //   else{
+    //     layout = Layout(layout_pointy, Point(size, size), Point(center.x, center.y));
+    //   }
+    //   var corners = polygon_corners(layout, h);
+    //   canvas.beginPath();
+    //   var item;
+    //   for (item in corners) {
+    //     if (item == 0) {
+    //       canvas.moveTo(corners[item].x, corners[item].y);
+    //     } else {
+    //       canvas.lineTo(corners[item].x, corners[item].y);
+    //     }
+    //   }
+    //   canvas.closePath();
+    //   canvas.stroke();
+    //   canvas.fillStyle = '#8ED6FF';
+    //   canvas.fill();
+    // }
+
+    function hex_corner_offset(layout, corner) {
       var M = layout.orientation;
       var size = layout.size;
       var angle = 2.0 * Math.PI * (M.start_angle - corner) / 6;
       return Point(size.x * Math.cos(angle), size.y * Math.sin(angle));
-    };
+    }
 
-    self.polygon_corners = function(layout, h) {
+    function polygon_corners(layout, h) {
       var corners = [];
-      var center = self.hex_to_pixel(layout, h);
+      var center = hex_to_pixel(layout, h);
       for (var i = 0; i < 6; i++) {
-        var offset = self.hex_corner_offset(layout, i);
+        var offset = hex_corner_offset(layout, i);
         corners.push(Point(center.x + offset.x, center.y + offset.y));
       }
       return corners;
-    };
+    }
 
-    self.hex_to_pixel = function(layout, h) {
+    function hex_round(h)
+    {
+    var q = Math.trunc(Math.round(h.q));
+    var r = Math.trunc(Math.round(h.r));
+    var s = Math.trunc(Math.round(h.s));
+    var q_diff = Math.abs(q - h.q);
+    var r_diff = Math.abs(r - h.r);
+    var s_diff = Math.abs(s - h.s);
+    if (q_diff > r_diff && q_diff > s_diff)
+    {
+        q = -r - s;
+    }
+    else
+        if (r_diff > s_diff)
+        {
+            r = -q - s;
+        }
+        else
+        {
+            s = -q - r;
+        }
+    return Hex(q, r, s);
+    }
+
+    function hex_to_pixel(layout, h) {
       var M = layout.orientation;
       var size = layout.size;
       var origin = layout.origin;
       var x = (M.f0 * h.q + M.f1 * h.r) * size.x;
       var y = (M.f2 * h.q + M.f3 * h.r) * size.y;
       return Point(x + origin.x, y + origin.y);
-    };
+    }
 
-    self.pixel_to_hex = function(layout, p) {
+    function pixel_to_hex(layout, p) {
       var M = layout.orientation;
       var size = layout.size;
       var origin = layout.origin;
@@ -130,7 +181,40 @@ angular.module('hexApp', [])
       var q = M.b0 * pt.x + M.b1 * pt.y;
       var r = M.b2 * pt.x + M.b3 * pt.y;
       return Hex(q, r, -q - r);
+    }
+
+    self.doClick = function(event){
+    var offsetX = event.offsetX;
+    var offsetY = event.offsetY;
+    var x = self.center.x - offsetX;
+    var y = self.center.y - offsetY;
+    var res = pixel_to_hex(layout,Point(offsetX,offsetY));
+    var mouse_check = hex_round(res);
+    if (hex_distance(mouse_check,Hex(0,0,0)) < self.radius+1){
+      self.mouse = hex_round(res);
+      console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
+    }
+    // self.mouse = hex_round(res);
+
+    // draw_hex(ctx, r.q, r.r, r.s, self.center, self.size,'#8ED6FF');
+    // you have lots of things to try here, not sure what you want to calculate
+    // console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
     };
+
+    function hex_subtract(a, b)
+    {
+        return Hex(a.q - b.q, a.r - b.r, a.s - b.s);
+    }
+
+    function hex_length(hex)
+    {
+        return Math.trunc((Math.abs(hex.q) + Math.abs(hex.r) + Math.abs(hex.s)) / 2);
+    }
+
+    function hex_distance(a, b)
+    {
+        return hex_length(hex_subtract(a, b));
+    }
 
     //named functions
     function Point(x, y) {

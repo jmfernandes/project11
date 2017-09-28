@@ -51,10 +51,12 @@
           </form>
           {{mainCtrl.resize()}}
           {{mainCtrl.draw()}}
+          {{mainCtrl.mouse}}<br>
           <canvas id="canvas"
                   width="1000"
                   height="1000"
-                  style="border: 1px solid black;">
+                  style="border: 1px solid black;"
+                  ng-click="mainCtrl.doClick($event)">
           </canvas>
           </body>
 
