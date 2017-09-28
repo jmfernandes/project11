@@ -20,30 +20,42 @@
         <article class="post-content">
 
           <body ng-controller="MainCtrl as mainCtrl" >
-            <form name="myForm">
-    <label for="singleSelect"> Choose if hex will be flat or pointy up: </label>
-    <select name="singleSelect" ng-model="mainCtrl.option" ng-change="mainCtrl.clear()">
-      <option value="flat" selected="selected">flat</option>
-      <option value="pointy">pointy</option>
-    </select>
-    <br>
-    <label>
-      Size:
-      <input type="text"
-      name="size"
-      ng-model="mainCtrl.size"
-      ng-change="mainCtrl.clear()" ng-model-options="mainCtrl.modelOptions" required>
-   </label>
-   <br>
-   <label for="sizeSelect"> choose radius: </label>
-   <select name="sizeSelect" ng-model="mainCtrl.radius" ng-change="mainCtrl.clear()" convert-to-number>
-     <option value="0">0</option>
-     <option value="1" selected="selected">1</option>
-     <option value="2">2</option>
-   </select>
-  </form>
-            {{mainCtrl.draw()}}
-           <canvas id="canvas" width="1000" height="1000"></canvas>
+          <form name="myForm">
+            <label for="singleSelect"> Choose if hex will be flat or pointy up: </label>
+            <select name="singleSelect"
+                    ng-model="mainCtrl.option"
+                    ng-change="mainCtrl.change()">
+              <option value="flat" selected="selected">flat</option>
+              <option value="pointy">pointy</option>
+            </select>
+            <br>
+            <label for="size">Size:</label>
+            <input type="number"
+                    name="size"
+                    ng-model="mainCtrl.size"
+                    ng-change="mainCtrl.change()"
+                    ng-model-options="mainCtrl.modelOptions"
+                    min="0" required>
+            <br>
+            <label for="radiusSelect"> Choose radius: </label>
+            <select name="radiusSelect"
+                    ng-model="mainCtrl.radius"
+                    ng-change="mainCtrl.change()" convert-to-number>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+             </select>
+          </form>
+          {{mainCtrl.resize()}}
+          {{mainCtrl.draw()}}
+          <canvas id="canvas"
+                  width="1000"
+                  height="1000"
+                  style="border: 1px solid black;">
+          </canvas>
           </body>
 
 

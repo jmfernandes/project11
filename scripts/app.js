@@ -3,11 +3,36 @@ angular.module('hexApp', [])
     var self = this;
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
+    var layout;
+
+    var isMobile = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+    if( isMobile.any() ) {
+      self.size = 20;
+    } else{
+      self.size = 50;
+    }
 
     self.option = "flat";
-    self.center = Point(250, 250);
-    self.size = 50;
-    self.radius = 1;
+    self.radius = 2;
 
     self.modelOptions ={
       updateOn: 'default blur',
@@ -19,8 +44,19 @@ angular.module('hexApp', [])
       allowInvalid: true
     };
 
+    self.resize = function(){
+      ctx.canvas.width = Math.abs(self.size*2*3/4*(2*self.radius+3.5));
+      ctx.canvas.height = Math.abs(self.size*2*3/4*(2*self.radius+3.5));
+      self.center = Point(ctx.canvas.width/2, ctx.canvas.width/2);
+    };
+
     self.clear = function(){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+    };
+
+    self.change = function(){
+      self.resize();
+      self.clear();
     };
 
     self.draw = function() {
@@ -40,7 +76,6 @@ angular.module('hexApp', [])
 
     self.draw_hex = function(canvas, q, r, s, center, size) {
       var h = Hex(q, r, s);
-      var layout;
       if (self.option == "flat"){
         layout = Layout(layout_flat, Point(size, size), Point(center.x, center.y));
       }
