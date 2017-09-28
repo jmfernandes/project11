@@ -1,0 +1,73 @@
+<!doctype html>
+<html ng-app="hexApp">
+  <head>
+    <link rel="stylesheet" href="main.css">
+    <title>project11</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicons/manifest.json">
+    <link rel="mask-icon" href="assets/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="assets/favicons/favicon.ico">
+    <meta name="msapplication-config" content="assets/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+  </head>
+  <body>
+    <div id="header"></div>
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post-content">
+
+          <body ng-controller="MainCtrl as mainCtrl" >
+            <form name="myForm">
+    <label for="singleSelect"> Choose if hex will be flat or pointy up: </label>
+    <select name="singleSelect" ng-model="mainCtrl.option" ng-change="mainCtrl.clear()">
+      <option value="flat" selected="selected">flat</option>
+      <option value="pointy">pointy</option>
+    </select>
+    <br>
+    <label>
+      Size:
+      <input type="text"
+      name="size"
+      ng-model="mainCtrl.size"
+      ng-change="mainCtrl.clear()" ng-model-options="mainCtrl.modelOptions" required>
+   </label>
+   <br>
+   <label for="sizeSelect"> choose radius: </label>
+   <select name="sizeSelect" ng-model="mainCtrl.radius" ng-change="mainCtrl.clear()" convert-to-number>
+     <option value="0">0</option>
+     <option value="1" selected="selected">1</option>
+     <option value="2">2</option>
+   </select>
+  </form>
+            {{mainCtrl.draw()}}
+           <canvas id="canvas" width="1000" height="1000"></canvas>
+          </body>
+
+
+        </article>
+      </div>
+    </main>
+    <div id="footer"></div>
+
+  <!-- Necessary Library Scripts -->
+    <script src="assets/library/jquery-3.2.1.min.js"></script>
+    <script src="assets/library/angular.min.js"></script>
+	  <script src="assets/library/angular-route.min.js"></script>
+    <script src="assets/library/angular-messages.min.js"></script>
+    <script src="assets/library/lodash.js"></script>
+  <!-- App file -->
+    <script src="scripts/app.js"></script>
+  <!-- Controllers -->
+
+  <!-- jQuery code -->
+    <script>
+    $(function(){
+      $("#header").load("views/header.html");
+      $("#footer").load("views/footer.html");
+    });
+    </script>
+  </body>
+</html>
