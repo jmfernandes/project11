@@ -182,12 +182,16 @@ angular.module('hexApp', [])
     var p = ctx.getImageData(offsetX, offsetY, 1, 1).data;
     if (hex_distance(mouse_check,Hex(0,0,0)) < self.radius+1){
       if (self.format == 0){
-        if (hex_distance(Hex(self.mouse.q,self.mouse.r,self.mouse.s),Hex(0,0,0)) < self.radius+1){
+        if (hex_distance(Hex(self.mouse.q,self.mouse.r,self.mouse.s),Hex(0,0,0)) < self.radius+1){ //dont redraw outside hex
           draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,"#ffffff");
         }
+        draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,'#8ED6FF');
+      }
+      else if (self.format == 1){
+        draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,'#8ED6FF');
       }
       self.mouse = hex_round(res);
-      draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,'#8ED6FF');
+      // draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,'#8ED6FF');
       // console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
     }
 
