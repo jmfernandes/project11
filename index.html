@@ -19,7 +19,7 @@
       <div class="wrapper">
         <article class="post-content">
 
-          <body ng-controller="MainCtrl as mainCtrl" >
+          <body ng-controller="MainCtrl as mainCtrl" ng-init="mainCtrl.init()" >
           <form name="myForm">
             <label for="singleSelect"> Choose if hex will be flat or pointy up: </label>
             <select name="singleSelect"
@@ -48,10 +48,17 @@
               <option value="4">4</option>
               <option value="5">5</option>
              </select>
+             <br>
+             <label for="styleSelect"> select what you want to do</label>
+             <select name="styleSelect"
+                     ng-model="mainCtrl.format"
+                     ng-change="mainCtrl.change()" convert-to-number>
+               <option value="0">click one at a time</option>
+               <option value="1">fill in multiple</option>
+              </select>
           </form>
-          {{mainCtrl.resize()}}
-          {{mainCtrl.draw()}}
-          {{mainCtrl.mouse}}<br>
+          <!-- I DONT NEED GRID ANYMORE<br> ill just detect color on draw -->
+          ({{mainCtrl.mouse.q}},{{mainCtrl.mouse.s}})<br>
           <canvas id="canvas"
                   width="1000"
                   height="1000"

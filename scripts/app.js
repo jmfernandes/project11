@@ -4,7 +4,19 @@ angular.module('hexApp', [])
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     var layout;
-    self.mouse = "";
+    self.mouse =  "";
+    self.format = 0;
+    // self.grid = [];
+    // self.grid = [
+    //   {
+    //     hex: Hex(0,0,0),
+    //     color: "#8ED6FF"
+    //   },
+    //   {
+    //     hex: Hex(1,0,-1),
+    //     color:"#ffffff"
+    //   }
+    // ];
 
     var isMobile = {
     Android: function() {
@@ -34,7 +46,7 @@ angular.module('hexApp', [])
     }
 
     self.option = "flat";
-    self.radius = 2;
+    self.radius = 1;
 
     self.modelOptions ={
       updateOn: 'default blur',
@@ -46,6 +58,16 @@ angular.module('hexApp', [])
       allowInvalid: true
     };
 
+    // for (i = -self.radius; i <= self.radius; i++) {
+    //   for (j = -self.radius; j <= self.radius; j++) {
+    //     for (k = -self.radius; k <= self.radius; k++) {
+    //       if (i+j+k == 0){
+    //         self.grid.push({hex:Hex(i,j,k),color:"#ffffff"});
+    //       }
+    //     }
+    //   }
+    // }
+
     self.resize = function(){
       ctx.canvas.width = Math.abs(self.size*2*3/4*(2*self.radius+3.5));
       ctx.canvas.height = Math.abs(self.size*2*3/4*(2*self.radius+3.5));
@@ -54,20 +76,33 @@ angular.module('hexApp', [])
 
     self.clear = function(){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      self.mouse=""
+    };
+
+    self.init = function(){
+      self.resize();
+      self.draw();
     };
 
     self.change = function(){
       self.resize();
       self.clear();
+      self.draw();
     };
 
     self.draw = function() {
-
+        // console.log("ran");
         for (i = -self.radius; i <= self.radius; i++) {
           for (j = -self.radius; j <= self.radius; j++) {
             for (k = -self.radius; k <= self.radius; k++) {
               if (i+j+k == 0){
-                draw_hex(ctx, i, j, k, self.center, self.size,"#ffffff");
+                //keep if else in tact below to keep colored hexes
+                if (self.mouse.q ==i && self.mouse.r ==j && self.mouse.s ==k){
+                  draw_hex(ctx, i, j, k, self.center, self.size,"#8ED6FF");
+                }
+                else{
+                    draw_hex(ctx, i, j, k, self.center, self.size,"#ffffff");
+                }
               }
             }
           }
@@ -98,30 +133,6 @@ angular.module('hexApp', [])
       canvas.fillStyle = color;
       canvas.fill();
     }
-
-    // function draw_hex_color(canvas, q, r, s, center, size) {
-    //   var h = Hex(q, r, s);
-    //   if (self.option == "flat"){
-    //     layout = Layout(layout_flat, Point(size, size), Point(center.x, center.y));
-    //   }
-    //   else{
-    //     layout = Layout(layout_pointy, Point(size, size), Point(center.x, center.y));
-    //   }
-    //   var corners = polygon_corners(layout, h);
-    //   canvas.beginPath();
-    //   var item;
-    //   for (item in corners) {
-    //     if (item == 0) {
-    //       canvas.moveTo(corners[item].x, corners[item].y);
-    //     } else {
-    //       canvas.lineTo(corners[item].x, corners[item].y);
-    //     }
-    //   }
-    //   canvas.closePath();
-    //   canvas.stroke();
-    //   canvas.fillStyle = '#8ED6FF';
-    //   canvas.fill();
-    // }
 
     function hex_corner_offset(layout, corner) {
       var M = layout.orientation;
@@ -190,15 +201,47 @@ angular.module('hexApp', [])
     var y = self.center.y - offsetY;
     var res = pixel_to_hex(layout,Point(offsetX,offsetY));
     var mouse_check = hex_round(res);
+    var p = ctx.getImageData(offsetX, offsetY, 1, 1).data;
+    // console.log(p,rgbToHex(p[0], p[1], p[2]));
     if (hex_distance(mouse_check,Hex(0,0,0)) < self.radius+1){
-      self.mouse = hex_round(res);
-      console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
-    }
-    // self.mouse = hex_round(res);
 
-    // draw_hex(ctx, r.q, r.r, r.s, self.center, self.size,'#8ED6FF');
-    // you have lots of things to try here, not sure what you want to calculate
-    // console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
+      // if (self.format == 0){ //reset grid to white
+      //   let obj = self.grid.find((o, i) => {
+      //   if (o.color != "#ffffff") {
+      //       console.log(o.hex);
+      //       self.grid[i] = { hex: o.hex, color: "#ffffff"};
+      //       // return true; // stop searching
+      //   }
+      //   });
+      // }
+      //
+      // let obj = self.grid.find((o, i) => {
+      // if (o.hex.q==mouse_check.q && o.hex.r==mouse_check.r&& o.hex.s==mouse_check.s) {
+      //     self.grid[i] = { hex: Hex(mouse_check.q,mouse_check.r,mouse_check.s), color: "#8ED6FF"};
+      //     return true; // stop searching
+      // }
+      // });
+      // console.log(mouse_check,self.mouse);
+      if (self.format == 0){
+        if (hex_distance(Hex(self.mouse.q,self.mouse.r,self.mouse.s),Hex(0,0,0)) < self.radius+1){
+          draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,"#ffffff");
+        }
+        draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,"#8ED6FF");
+      }
+      else if(self.format == 1 ){
+        if (rgbToHex(p[0], p[1], p[2]) == "#8ed6ff"){
+          // console.log('blue');
+          draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,"#ffffff");
+        }
+        else{
+          draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,"#8ed6ff");
+        }
+      }
+      self.mouse = hex_round(res);
+      // draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,'#8ED6FF');
+      // console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
+    }
+
     };
 
     function hex_subtract(a, b)
@@ -214,6 +257,15 @@ angular.module('hexApp', [])
     function hex_distance(a, b)
     {
         return hex_length(hex_subtract(a, b));
+    }
+
+    function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     }
 
     //named functions
