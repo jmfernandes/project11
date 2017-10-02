@@ -179,6 +179,7 @@ angular.module('hexApp', [])
     var y = self.center.y - offsetY;
     var res = pixel_to_hex(layout,Point(offsetX,offsetY));
     var mouse_check = hex_round(res);
+    var p = ctx.getImageData(offsetX, offsetY, 1, 1).data;
     if (hex_distance(mouse_check,Hex(0,0,0)) < self.radius+1){
       if (self.format == 0){
         if (hex_distance(Hex(self.mouse.q,self.mouse.r,self.mouse.s),Hex(0,0,0)) < self.radius+1){
@@ -189,6 +190,7 @@ angular.module('hexApp', [])
       draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,'#8ED6FF');
       // console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
     }
+
 
     };
 
@@ -205,6 +207,15 @@ angular.module('hexApp', [])
     function hex_distance(a, b)
     {
         return hex_length(hex_subtract(a, b));
+    }
+
+    function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     }
 
     //named functions
