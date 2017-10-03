@@ -201,7 +201,6 @@ angular.module('hexApp', [])
       }
       self.mouse = hex_round(res);
       // draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,'#8ED6FF');
-      // console.log(event, offsetX, offsetY,self.mouse, hex_distance(self.mouse,Hex(0,0,0)));
     }
 
 
