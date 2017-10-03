@@ -188,7 +188,15 @@ angular.module('hexApp', [])
         draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,'#8ED6FF');
       }
       else if (self.format == 1){
-        draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,'#8ED6FF');
+        console.log(rgbToHex(p[0],p[1],p[2]));
+        if (rgbToHex(p[0],p[1],p[2]) == "#8ed6ff")
+        {
+          draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,'#ffffff');
+        }
+        else if (rgbToHex(p[0],p[1],p[2]) == "#ffffff"){
+          draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,'#8ED6FF');
+        }
+        // draw_hex(ctx, mouse_check.q, mouse_check.r, mouse_check.s, self.center, self.size,'#8ED6FF');
       }
       self.mouse = hex_round(res);
       // draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,'#8ED6FF');
