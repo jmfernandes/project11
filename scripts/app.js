@@ -57,6 +57,7 @@ angular.module('hexApp', [])
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
 
+
     self.init = function(){
       self.resize();
       self.draw();
@@ -65,6 +66,13 @@ angular.module('hexApp', [])
     self.change = function(){
       self.resize();
       self.clear();
+      self.draw();
+    };
+
+    self.fullchange = function(){
+      self.resize();
+      self.clear();
+      self.mouse= "";
       self.draw();
     };
 
