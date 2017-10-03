@@ -181,6 +181,7 @@ angular.module('hexApp', [])
     var mouse_check = hex_round(res);
     var p = ctx.getImageData(offsetX, offsetY, 1, 1).data;
     if (hex_distance(mouse_check,Hex(0,0,0)) < self.radius+1){
+      console.log(self.format,rgbToHex(p[0],p[1],p[2]))
       if (self.format == 0){
         if (hex_distance(Hex(self.mouse.q,self.mouse.r,self.mouse.s),Hex(0,0,0)) < self.radius+1){ //dont redraw outside hex
           draw_hex(ctx, self.mouse.q, self.mouse.r, self.mouse.s, self.center, self.size,"#ffffff");
