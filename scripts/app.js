@@ -178,7 +178,7 @@ angular.module('hexApp', [])
     var x = self.center.x - offsetX;
     var y = self.center.y - offsetY;
     var res = pixel_to_hex(layout,Point(offsetX,offsetY));
-    var mouse_check = hex_round(res);
+    var mouse_check = hex_round(res);//stuff
     var p = ctx.getImageData(offsetX, offsetY, 1, 1).data;
     if (hex_distance(mouse_check,Hex(0,0,0)) < self.radius+1){
       console.log(self.format,rgbToHex(p[0],p[1],p[2]))
